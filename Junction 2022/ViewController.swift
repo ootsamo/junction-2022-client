@@ -3,6 +3,7 @@ import MapboxMaps
 
 class ViewController: UIViewController {
 	private let mapView: MapView
+	private let detailViewController = DetailViewController()
 	private let networkService = NetworkService()
 	private let isochroneSourceID = "isochrone-source"
 	private let isochroneLayerID = "isochrone-layer"
@@ -47,6 +48,18 @@ class ViewController: UIViewController {
 			target: self,
 			action: #selector(handleLongPress)
 		))
+
+		addChild(detailViewController)
+		view.addSubview(detailViewController.view)
+		detailViewController.didMove(toParent: self)
+
+		let detailView: UIView = detailViewController.view
+		detailView.translatesAutoresizingMaskIntoConstraints = false
+		NSLayoutConstraint.activate([
+			detailView.widthAnchor.constraint(equalToConstant: 400),
+			detailView.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
+			detailView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor)
+		])
 	}
 
 	private func addArea(from featureCollection: FeatureCollection) {
@@ -93,8 +106,7 @@ class ViewController: UIViewController {
 					transitDuration: 10
 				)
 				let address = try await networkService.fetchAddress(at: coordinates)
-				print("Address: \(address!)")
-				
+				detailViewController.headline = address
 
 				guard case .featureCollection(let featureCollection) = response.isochoroneGeoJson else {
 					assertionFailure("Returned geojson was not a feature collection")

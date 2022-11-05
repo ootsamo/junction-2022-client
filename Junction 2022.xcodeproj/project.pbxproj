@@ -15,6 +15,7 @@
 		27B9CCEE2916B93E00129E32 /* SampleResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = 27B9CCED2916B93E00129E32 /* SampleResponse.json */; };
 		27B9CCF02916BA7C00129E32 /* Unsupported.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B9CCEF2916BA7C00129E32 /* Unsupported.swift */; };
 		27B9CCF32916CA3200129E32 /* MapboxSearch in Frameworks */ = {isa = PBXBuildFile; productRef = 27B9CCF22916CA3200129E32 /* MapboxSearch */; };
+		27B9CCF52916CFC800129E32 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B9CCF42916CFC800129E32 /* DetailViewController.swift */; };
 		27FF6BFD2915A0BD003C0136 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FF6BFC2915A0BD003C0136 /* AppDelegate.swift */; };
 		27FF6BFF2915A0BD003C0136 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FF6BFE2915A0BD003C0136 /* SceneDelegate.swift */; };
 		27FF6C012915A0BD003C0136 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FF6C002915A0BD003C0136 /* ViewController.swift */; };
@@ -28,6 +29,7 @@
 		27B9CCEB2916AE0400129E32 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		27B9CCED2916B93E00129E32 /* SampleResponse.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SampleResponse.json; sourceTree = "<group>"; };
 		27B9CCEF2916BA7C00129E32 /* Unsupported.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Unsupported.swift; sourceTree = "<group>"; };
+		27B9CCF42916CFC800129E32 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		27FF6BF92915A0BD003C0136 /* Junction 2022.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Junction 2022.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		27FF6BFC2915A0BD003C0136 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		27FF6BFE2915A0BD003C0136 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -88,6 +90,7 @@
 				27FF6BFC2915A0BD003C0136 /* AppDelegate.swift */,
 				27FF6BFE2915A0BD003C0136 /* SceneDelegate.swift */,
 				27FF6C002915A0BD003C0136 /* ViewController.swift */,
+				27B9CCF42916CFC800129E32 /* DetailViewController.swift */,
 				27B9CCEB2916AE0400129E32 /* NetworkService.swift */,
 				27B9CCE12915B79E00129E32 /* Configure.swift */,
 				27B9CCEF2916BA7C00129E32 /* Unsupported.swift */,
@@ -185,6 +188,7 @@
 				27B9CCE22915B79E00129E32 /* Configure.swift in Sources */,
 				27B9CCEC2916AE0400129E32 /* NetworkService.swift in Sources */,
 				27FF6BFF2915A0BD003C0136 /* SceneDelegate.swift in Sources */,
+				27B9CCF52916CFC800129E32 /* DetailViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
