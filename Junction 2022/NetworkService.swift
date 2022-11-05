@@ -107,8 +107,20 @@ struct ReachablePopulation: Decodable {
 	let score: Double
 }
 
+struct POIsSummary: Decodable {
+	let POIs: POIs
+	let score: Double?
+}
+
+struct POIs: Decodable {
+	let shops: GeoJSONObject
+	let restaurants: GeoJSONObject
+	let entertainment: GeoJSONObject
+}
+
 struct Response: Decodable {
 	let reachablePopulation: ReachablePopulation
 	let isochoroneGeoJson: GeoJSONObject
 	let cityBikes: CityBikes
+	let POIs: POIsSummary
 }

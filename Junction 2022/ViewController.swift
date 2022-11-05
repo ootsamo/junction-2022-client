@@ -189,7 +189,11 @@ class ViewController: UIViewController {
 			icon: UIImage(systemName: "bicycle.circle"),
 			value: Int(response.cityBikes.score)
 		)
-		detailViewController.setScoreDetails([reachablePopulationDetail, cityBikesDetail, reachablePopulationDetail])
+		let poisDetail = ScoreDetail(
+			icon: UIImage(systemName: "star.circle"),
+			value: Int(response.POIs.score ?? 1000)
+		)
+		detailViewController.setScoreDetails([reachablePopulationDetail, cityBikesDetail, poisDetail])
 	}
 
 	private func updateAttractionDetails(from response: Response) {
@@ -203,13 +207,20 @@ class ViewController: UIViewController {
 			description: "Nearest bike station:",
 			value: response.cityBikes.distanceToNearest.map { String(format: "%.2f km", $0) } ?? "-"
 		)
-		detailViewController.setAttractionDetails([reachablePopulationDetail, cityBikesDetail, reachablePopulationDetail])
+		let poisDetail = AttractionDetail(
+			icon: UIImage(systemName: "star.circle"),
+			description: "Nearby points of interest:",
+			value: String(response.POIs.POIs.shops.featureCount + response.POIs.POIs.restaurants.featureCount + response.POIs.POIs.entertainment.featureCount)
+		)
+		detailViewController.setAttractionDetails([reachablePopulationDetail, cityBikesDetail, poisDetail])
 	}
 
 	private func updateMarkers(from response: Response) {
 		markerViews.forEach(mapView.viewAnnotations.remove)
 		markerViews.removeAll()
+		markerAnnotationManager.annotations.removeAll()
 		updateCityBikeMarkers(from: response)
+		updatePOIMarkers(from: response)
 	}
 
 	private func updateCityBikeMarkers(from response: Response) {
@@ -223,10 +234,36 @@ class ViewController: UIViewController {
 			return point
 		}.compactMap { $0 }
 
-		markerAnnotationManager.annotations = points.map {
+		markerAnnotationManager.annotations.append(contentsOf: points.map {
 			var customPointAnnotation = PointAnnotation(coordinate: $0.coordinates)
 			customPointAnnotation.image = .init(image: UIImage(named: "bike")!, name: "bike")
 			return customPointAnnotation
+		})
+	}
+
+	private func updatePOIMarkers(from response: Response) {
+		let mapping: [(name: String, pois: GeoJSONObject)] = [
+			("shop", response.POIs.POIs.shops),
+			("restaurant", response.POIs.POIs.restaurants),
+			("entertainment", response.POIs.POIs.entertainment)
+		]
+
+		for pair in mapping {
+			guard case .featureCollection(let featureCollection) = pair.pois else {
+				assertionFailure("POIs were not a feature collection")
+				return
+			}
+
+			let points = featureCollection.features.map { feature -> Point? in
+				guard case .point(let point) = feature.geometry else { return nil }
+				return point
+			}.compactMap { $0 }
+
+			markerAnnotationManager.annotations.append(contentsOf: points.map {
+				var customPointAnnotation = PointAnnotation(coordinate: $0.coordinates)
+				customPointAnnotation.image = .init(image: UIImage(named: pair.name)!, name: pair.name)
+				return customPointAnnotation
+			})
 		}
 	}
 }
