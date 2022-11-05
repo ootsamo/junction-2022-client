@@ -11,7 +11,9 @@
 		27B9CCE02915B57600129E32 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B9CCDF2915B57600129E32 /* Secrets.swift */; };
 		27B9CCE22915B79E00129E32 /* Configure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B9CCE12915B79E00129E32 /* Configure.swift */; };
 		27B9CCE92916AA8800129E32 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 27B9CCE72916AA8800129E32 /* Assets.xcassets */; };
-		27B9CCEA2916AA8800129E32 /* data.json in Resources */ = {isa = PBXBuildFile; fileRef = 27B9CCE82916AA8800129E32 /* data.json */; };
+		27B9CCEC2916AE0400129E32 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B9CCEB2916AE0400129E32 /* NetworkService.swift */; };
+		27B9CCEE2916B93E00129E32 /* SampleResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = 27B9CCED2916B93E00129E32 /* SampleResponse.json */; };
+		27B9CCF02916BA7C00129E32 /* Unsupported.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B9CCEF2916BA7C00129E32 /* Unsupported.swift */; };
 		27FF6BFD2915A0BD003C0136 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FF6BFC2915A0BD003C0136 /* AppDelegate.swift */; };
 		27FF6BFF2915A0BD003C0136 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FF6BFE2915A0BD003C0136 /* SceneDelegate.swift */; };
 		27FF6C012915A0BD003C0136 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FF6C002915A0BD003C0136 /* ViewController.swift */; };
@@ -22,7 +24,9 @@
 		27B9CCDF2915B57600129E32 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 		27B9CCE12915B79E00129E32 /* Configure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configure.swift; sourceTree = "<group>"; };
 		27B9CCE72916AA8800129E32 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		27B9CCE82916AA8800129E32 /* data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = data.json; sourceTree = "<group>"; };
+		27B9CCEB2916AE0400129E32 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
+		27B9CCED2916B93E00129E32 /* SampleResponse.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SampleResponse.json; sourceTree = "<group>"; };
+		27B9CCEF2916BA7C00129E32 /* Unsupported.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Unsupported.swift; sourceTree = "<group>"; };
 		27FF6BF92915A0BD003C0136 /* Junction 2022.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Junction 2022.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		27FF6BFC2915A0BD003C0136 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		27FF6BFE2915A0BD003C0136 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -53,8 +57,8 @@
 		27B9CCE62916AA8800129E32 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				27B9CCED2916B93E00129E32 /* SampleResponse.json */,
 				27B9CCE72916AA8800129E32 /* Assets.xcassets */,
-				27B9CCE82916AA8800129E32 /* data.json */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -82,7 +86,9 @@
 				27FF6BFC2915A0BD003C0136 /* AppDelegate.swift */,
 				27FF6BFE2915A0BD003C0136 /* SceneDelegate.swift */,
 				27FF6C002915A0BD003C0136 /* ViewController.swift */,
+				27B9CCEB2916AE0400129E32 /* NetworkService.swift */,
 				27B9CCE12915B79E00129E32 /* Configure.swift */,
+				27B9CCEF2916BA7C00129E32 /* Unsupported.swift */,
 				27B9CCDF2915B57600129E32 /* Secrets.swift */,
 				27B9CCE62916AA8800129E32 /* Resources */,
 				27FF6C072915A0BE003C0136 /* LaunchScreen.storyboard */,
@@ -155,8 +161,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				27B9CCEE2916B93E00129E32 /* SampleResponse.json in Resources */,
 				27B9CCE92916AA8800129E32 /* Assets.xcassets in Resources */,
-				27B9CCEA2916AA8800129E32 /* data.json in Resources */,
 				27FF6C092915A0BE003C0136 /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -171,7 +177,9 @@
 				27FF6C012915A0BD003C0136 /* ViewController.swift in Sources */,
 				27B9CCE02915B57600129E32 /* Secrets.swift in Sources */,
 				27FF6BFD2915A0BD003C0136 /* AppDelegate.swift in Sources */,
+				27B9CCF02916BA7C00129E32 /* Unsupported.swift in Sources */,
 				27B9CCE22915B79E00129E32 /* Configure.swift in Sources */,
+				27B9CCEC2916AE0400129E32 /* NetworkService.swift in Sources */,
 				27FF6BFF2915A0BD003C0136 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
