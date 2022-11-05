@@ -112,8 +112,14 @@ struct Marker {
 	let coordinate: CLLocationCoordinate2D
 }
 
+struct ReachablePopulation: Decodable {
+	let population: Int
+	let score: Double
+}
+
 struct Response: Decodable {
 //	let scores: [Score]
+	let reachablePopulation: ReachablePopulation
 	let isochoroneGeoJson: GeoJSONObject
 //	let markers: [Marker]
 }

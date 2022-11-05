@@ -3,7 +3,12 @@ import MapboxMaps
 
 class ViewController: UIViewController {
 	private let mapView: MapView
-	private let pinView = UIImageView(image: UIImage(systemName: "mappin"))
+
+	private let pinView = configure(UIImageView()) {
+		$0.image = UIImage(systemName: "mappin")
+		$0.tintColor = .red
+	}
+
 	private let pointAnnotationManager: PointAnnotationManager
 	private let detailViewController = DetailViewController()
 	private let networkService = NetworkService()
@@ -60,10 +65,59 @@ class ViewController: UIViewController {
 		let detailView: UIView = detailViewController.view
 		detailView.translatesAutoresizingMaskIntoConstraints = false
 		NSLayoutConstraint.activate([
-			detailView.widthAnchor.constraint(equalToConstant: 400),
+			detailView.widthAnchor.constraint(equalToConstant: 320),
 			detailView.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
 			detailView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor)
 		])
+	}
+
+	@objc
+	private func handleLongPress(recognizer: UILongPressGestureRecognizer) {
+		if recognizer.state == .began {
+			let point = recognizer.location(in: mapView)
+			let coordinate = mapView.mapboxMap.coordinate(for: point)
+
+			do {
+				try updatePin(for: coordinate)
+			} catch {
+				assertionFailure("Failed to add or update pin annotation: \(error)")
+			}
+
+			Task {
+				do {
+					try await updateScores(for: coordinate)
+				} catch {
+					assertionFailure("Failed to update scores: \(error)")
+				}
+			}
+
+			Task {
+				do {
+					let address = try await networkService.fetchAddress(at: coordinate)
+					detailViewController.headline = address.primaryComponent ?? "No address"
+					detailViewController.subheadline = address.secondaryComponent
+				} catch {
+					assertionFailure("Failed to update address: \(error)")
+				}
+			}
+		}
+	}
+
+	private func updatePin(for coordinate: CLLocationCoordinate2D) throws {
+		let aspectRatio = pinView.image.map { $0.size.width / $0.size.height } ?? 1
+		let height: CGFloat = 64
+		let options = ViewAnnotationOptions(
+			geometry: Point(coordinate),
+			width: aspectRatio * height,
+			height: height,
+			anchor: .bottom
+		)
+
+		if pinView.superview == nil {
+			try mapView.viewAnnotations.add(pinView, options: options)
+		} else {
+			try mapView.viewAnnotations.update(pinView, options: options)
+		}
 	}
 
 	private func addArea(from featureCollection: FeatureCollection) {
@@ -92,56 +146,41 @@ class ViewController: UIViewController {
 		}
 	}
 
-	@objc
-	private func handleLongPress(recognizer: UILongPressGestureRecognizer) {
-		if recognizer.state == .began {
-			let point = recognizer.location(in: mapView)
-			let coordinate = mapView.mapboxMap.coordinate(for: point)
+	private func updateScores(for coordinate: CLLocationCoordinate2D) async throws {
+		let response = try await networkService.fetchScores(
+			at: coordinate,
+			transitType: .transit,
+			transitDuration: 5
+		)
 
-			do {
-				let aspectRatio = pinView.image.map { $0.size.width / $0.size.height } ?? 1
-				let height: CGFloat = 64
-				let options = ViewAnnotationOptions(
-					geometry: Point(coordinate),
-					width: aspectRatio * height,
-					height: height,
-					anchor: .bottom
-				)
-				pinView.tintColor = .red
-				if pinView.superview == nil {
-					try mapView.viewAnnotations.add(pinView, options: options)
-				} else {
-					try mapView.viewAnnotations.update(pinView, options: options)
-				}
-			} catch {
-				assertionFailure("Failed to add or update pin annotation: \(error)")
-			}
+		updateAreas(from: response)
+		updateScoreDetails(from: response)
+		updateAttractionDetails(from: response)
+	}
 
-//			var annotation = PointAnnotation(coordinate: coordinates)
-//			annotation.image = .init(image: UIImage(systemName: "mappin")!, name: "pin")
-//			pointAnnotationManager.annotations = [annotation]
-//			mapView.annotations.makePointAnnotationManager()
-
-			Task {
-				let response = try await networkService.fetchScores(
-					at: coordinate,
-					transitType: .drive,
-					transitDuration: 10
-				)
-
-				guard case .featureCollection(let featureCollection) = response.isochoroneGeoJson else {
-					assertionFailure("Returned geojson was not a feature collection")
-					return
-				}
-
-				addArea(from: featureCollection)
-			}
-
-			Task {
-				let address = try await networkService.fetchAddress(at: coordinate)
-				detailViewController.headline = address.primaryComponent ?? "No address"
-				detailViewController.subheadline = address.secondaryComponent
-			}
+	private func updateAreas(from response: Response) {
+		guard case .featureCollection(let featureCollection) = response.isochoroneGeoJson else {
+			assertionFailure("Returned geojson was not a feature collection")
+			return
 		}
+
+		addArea(from: featureCollection)
+	}
+
+	private func updateScoreDetails(from response: Response) {
+		let reachablePopulationDetail = ScoreDetail(
+			icon: UIImage(systemName: "person.2.circle"),
+			value: Int(response.reachablePopulation.score)
+		)
+		detailViewController.setScoreDetails([reachablePopulationDetail, reachablePopulationDetail, reachablePopulationDetail])
+	}
+
+	private func updateAttractionDetails(from response: Response) {
+		let reachablePopulationDetail = AttractionDetail(
+			icon: UIImage(systemName: "person.2.circle"),
+			description: "Reachable population:",
+			value: String(response.reachablePopulation.population)
+		)
+		detailViewController.setAttractionDetails([reachablePopulationDetail, reachablePopulationDetail, reachablePopulationDetail])
 	}
 }
