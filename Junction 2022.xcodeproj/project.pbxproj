@@ -7,19 +7,26 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		27B9CCDE2915B4EC00129E32 /* MapboxMaps in Frameworks */ = {isa = PBXBuildFile; productRef = 27B9CCDD2915B4EC00129E32 /* MapboxMaps */; };
+		27B9CCE02915B57600129E32 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B9CCDF2915B57600129E32 /* Secrets.swift */; };
+		27B9CCE22915B79E00129E32 /* Configure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B9CCE12915B79E00129E32 /* Configure.swift */; };
+		27B9CCE92916AA8800129E32 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 27B9CCE72916AA8800129E32 /* Assets.xcassets */; };
+		27B9CCEA2916AA8800129E32 /* data.json in Resources */ = {isa = PBXBuildFile; fileRef = 27B9CCE82916AA8800129E32 /* data.json */; };
 		27FF6BFD2915A0BD003C0136 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FF6BFC2915A0BD003C0136 /* AppDelegate.swift */; };
 		27FF6BFF2915A0BD003C0136 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FF6BFE2915A0BD003C0136 /* SceneDelegate.swift */; };
 		27FF6C012915A0BD003C0136 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FF6C002915A0BD003C0136 /* ViewController.swift */; };
-		27FF6C062915A0BE003C0136 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 27FF6C052915A0BE003C0136 /* Assets.xcassets */; };
 		27FF6C092915A0BE003C0136 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 27FF6C072915A0BE003C0136 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		27B9CCDF2915B57600129E32 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
+		27B9CCE12915B79E00129E32 /* Configure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configure.swift; sourceTree = "<group>"; };
+		27B9CCE72916AA8800129E32 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		27B9CCE82916AA8800129E32 /* data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = data.json; sourceTree = "<group>"; };
 		27FF6BF92915A0BD003C0136 /* Junction 2022.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Junction 2022.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		27FF6BFC2915A0BD003C0136 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		27FF6BFE2915A0BD003C0136 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		27FF6C002915A0BD003C0136 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		27FF6C052915A0BE003C0136 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		27FF6C082915A0BE003C0136 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		27FF6C0A2915A0BE003C0136 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -29,17 +36,35 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				27B9CCDE2915B4EC00129E32 /* MapboxMaps in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		27B9CCDC2915B4EC00129E32 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		27B9CCE62916AA8800129E32 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				27B9CCE72916AA8800129E32 /* Assets.xcassets */,
+				27B9CCE82916AA8800129E32 /* data.json */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		27FF6BF02915A0BD003C0136 = {
 			isa = PBXGroup;
 			children = (
 				27FF6BFB2915A0BD003C0136 /* Junction 2022 */,
 				27FF6BFA2915A0BD003C0136 /* Products */,
+				27B9CCDC2915B4EC00129E32 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -57,7 +82,9 @@
 				27FF6BFC2915A0BD003C0136 /* AppDelegate.swift */,
 				27FF6BFE2915A0BD003C0136 /* SceneDelegate.swift */,
 				27FF6C002915A0BD003C0136 /* ViewController.swift */,
-				27FF6C052915A0BE003C0136 /* Assets.xcassets */,
+				27B9CCE12915B79E00129E32 /* Configure.swift */,
+				27B9CCDF2915B57600129E32 /* Secrets.swift */,
+				27B9CCE62916AA8800129E32 /* Resources */,
 				27FF6C072915A0BE003C0136 /* LaunchScreen.storyboard */,
 				27FF6C0A2915A0BE003C0136 /* Info.plist */,
 			);
@@ -80,6 +107,9 @@
 			dependencies = (
 			);
 			name = "Junction 2022";
+			packageProductDependencies = (
+				27B9CCDD2915B4EC00129E32 /* MapboxMaps */,
+			);
 			productName = "Junction 2022";
 			productReference = 27FF6BF92915A0BD003C0136 /* Junction 2022.app */;
 			productType = "com.apple.product-type.application";
@@ -108,6 +138,9 @@
 				Base,
 			);
 			mainGroup = 27FF6BF02915A0BD003C0136;
+			packageReferences = (
+				27FF6C132915B09A003C0136 /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */,
+			);
 			productRefGroup = 27FF6BFA2915A0BD003C0136 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -122,8 +155,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				27B9CCE92916AA8800129E32 /* Assets.xcassets in Resources */,
+				27B9CCEA2916AA8800129E32 /* data.json in Resources */,
 				27FF6C092915A0BE003C0136 /* LaunchScreen.storyboard in Resources */,
-				27FF6C062915A0BE003C0136 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -135,7 +169,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				27FF6C012915A0BD003C0136 /* ViewController.swift in Sources */,
+				27B9CCE02915B57600129E32 /* Secrets.swift in Sources */,
 				27FF6BFD2915A0BD003C0136 /* AppDelegate.swift in Sources */,
+				27B9CCE22915B79E00129E32 /* Configure.swift in Sources */,
 				27FF6BFF2915A0BD003C0136 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -346,6 +382,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		27FF6C132915B09A003C0136 /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "ssh://git@github.com/mapbox/mapbox-maps-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		27B9CCDD2915B4EC00129E32 /* MapboxMaps */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 27FF6C132915B09A003C0136 /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */;
+			productName = MapboxMaps;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 27FF6BF12915A0BD003C0136 /* Project object */;
 }
