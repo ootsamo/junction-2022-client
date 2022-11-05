@@ -5,15 +5,14 @@ class ViewController: UIViewController {
 	private let mapView: MapView
 
 	private let pinView = configure(UIImageView()) {
-		$0.image = UIImage(systemName: "mappin")
-		$0.tintColor = .red
+		$0.image = UIImage(named: "pin")
 	}
 
-	private let pointAnnotationManager: PointAnnotationManager
+	private let pinAnnotationManager: PointAnnotationManager
+	private let markerAnnotationManager: PointAnnotationManager
+	private var markerViews = [UIView]()
 	private let detailViewController = DetailViewController()
 	private let networkService = NetworkService()
-	private let isochroneSourceID = "isochrone-source"
-	private let isochroneLayerID = "isochrone-layer"
 
 	override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
 		let mapInitOptions = MapInitOptions(
@@ -23,7 +22,8 @@ class ViewController: UIViewController {
 			cameraOptions: CameraOptions(
 				center: CLLocationCoordinate2D(latitude: 60.1816728, longitude: 24.9340785),
 				zoom: 11
-			)
+			),
+			styleURI: StyleURI(rawValue: "mapbox://styles/hallitunkki/cla2wbi3s00mt14p09fdvkj47")
 		)
 
 		mapView = MapView(
@@ -31,7 +31,8 @@ class ViewController: UIViewController {
 			mapInitOptions: mapInitOptions
 		)
 
-		pointAnnotationManager = mapView.annotations.makePointAnnotationManager()
+		pinAnnotationManager = mapView.annotations.makePointAnnotationManager()
+		markerAnnotationManager = mapView.annotations.makePointAnnotationManager()
 
 		super.init(nibName: nil, bundle: nil)
 	}
@@ -104,43 +105,46 @@ class ViewController: UIViewController {
 	}
 
 	private func updatePin(for coordinate: CLLocationCoordinate2D) throws {
-		let aspectRatio = pinView.image.map { $0.size.width / $0.size.height } ?? 1
-		let height: CGFloat = 64
-		let options = ViewAnnotationOptions(
-			geometry: Point(coordinate),
-			width: aspectRatio * height,
-			height: height,
-			anchor: .bottom
-		)
-
-		if pinView.superview == nil {
-			try mapView.viewAnnotations.add(pinView, options: options)
-		} else {
-			try mapView.viewAnnotations.update(pinView, options: options)
-		}
+		var pinAnnotation = PointAnnotation(coordinate: coordinate)
+		pinAnnotation.image = .init(image: UIImage(named: "pin")!, name: "pin")
+		pinAnnotationManager.annotations = [pinAnnotation]
 	}
 
 	private func addArea(from featureCollection: FeatureCollection) {
+		let sourceID = "isochrone-source"
+		let fillLayerID = "isochrone-fill-layer"
+		let lineLayerID = "isochrone-line-layer"
+
 		var geoJSONSource = GeoJSONSource()
 		geoJSONSource.data = .featureCollection(featureCollection)
 
-		var layer = FillLayer(id: isochroneLayerID)
-		layer.fillColor = .constant(StyleColor(red: 255, green: 0, blue: 0, alpha: 0.2)!)
-		layer.source = isochroneSourceID
+		var fillLayer = FillLayer(id: fillLayerID)
+		fillLayer.fillColor = .constant(StyleColor(red: 255, green: 255, blue: 255, alpha: 0.4)!)
+		fillLayer.source = sourceID
+
+		var lineLayer = LineLayer(id: lineLayerID)
+		lineLayer.lineWidth = .constant(4)
+		lineLayer.lineColor = .constant(StyleColor(red: 255, green: 255, blue: 255, alpha: 1)!)
+		lineLayer.source = sourceID
 
 		do {
 			let style = mapView.mapboxMap.style
 
-			if style.layerExists(withId: isochroneLayerID) {
-				try style.removeLayer(withId: isochroneLayerID)
+			if style.layerExists(withId: fillLayerID) {
+				try style.removeLayer(withId: fillLayerID)
 			}
 
-			if style.sourceExists(withId: isochroneSourceID) {
-				try style.removeSource(withId: isochroneSourceID)
+			if style.layerExists(withId: lineLayerID) {
+				try style.removeLayer(withId: lineLayerID)
+			}
+
+			if style.sourceExists(withId: sourceID) {
+				try style.removeSource(withId: sourceID)
 			}
 			
-			try style.addSource(geoJSONSource, id: isochroneSourceID)
-			try style.addLayer(layer)
+			try style.addSource(geoJSONSource, id: sourceID)
+			try style.addLayer(fillLayer)
+			try style.addLayer(lineLayer)
 		} catch {
 			assertionFailure("Failed to add line layer: \(error)")
 		}
@@ -153,9 +157,10 @@ class ViewController: UIViewController {
 			transitDuration: 5
 		)
 
-		updateAreas(from: response)
 		updateScoreDetails(from: response)
 		updateAttractionDetails(from: response)
+		updateMarkers(from: response)
+		updateAreas(from: response)
 	}
 
 	private func updateAreas(from response: Response) {
@@ -165,6 +170,14 @@ class ViewController: UIViewController {
 		}
 
 		addArea(from: featureCollection)
+
+		let points = featureCollection.features.map { feature -> [CLLocationCoordinate2D] in
+			guard case .polygon(let polygon) = feature.geometry else { return [] }
+			return polygon.coordinates.flatMap { $0 }
+		}.flatMap { $0 }
+		let padding = UIEdgeInsets(top: 64, left: 384, bottom: 64, right: 64)
+		let cameraOptions = mapView.mapboxMap.camera(for: points, padding: padding, bearing: nil, pitch: nil)
+		mapView.camera.fly(to: cameraOptions)
 	}
 
 	private func updateScoreDetails(from response: Response) {
@@ -172,7 +185,11 @@ class ViewController: UIViewController {
 			icon: UIImage(systemName: "person.2.circle"),
 			value: Int(response.reachablePopulation.score)
 		)
-		detailViewController.setScoreDetails([reachablePopulationDetail, reachablePopulationDetail, reachablePopulationDetail])
+		let cityBikesDetail = ScoreDetail(
+			icon: UIImage(systemName: "bicycle.circle"),
+			value: Int(response.cityBikes.score)
+		)
+		detailViewController.setScoreDetails([reachablePopulationDetail, cityBikesDetail, reachablePopulationDetail])
 	}
 
 	private func updateAttractionDetails(from response: Response) {
@@ -181,6 +198,35 @@ class ViewController: UIViewController {
 			description: "Reachable population:",
 			value: String(response.reachablePopulation.population)
 		)
-		detailViewController.setAttractionDetails([reachablePopulationDetail, reachablePopulationDetail, reachablePopulationDetail])
+		let cityBikesDetail = AttractionDetail(
+			icon: UIImage(systemName: "bicycle.circle"),
+			description: "Nearest bike station:",
+			value: response.cityBikes.distanceToNearest.map { String(format: "%.2f km", $0) } ?? "-"
+		)
+		detailViewController.setAttractionDetails([reachablePopulationDetail, cityBikesDetail, reachablePopulationDetail])
+	}
+
+	private func updateMarkers(from response: Response) {
+		markerViews.forEach(mapView.viewAnnotations.remove)
+		markerViews.removeAll()
+		updateCityBikeMarkers(from: response)
+	}
+
+	private func updateCityBikeMarkers(from response: Response) {
+		guard case .featureCollection(let featureCollection) = response.cityBikes.bikesInArea else {
+			assertionFailure("City bikes was not a feature collection")
+			return
+		}
+
+		let points = featureCollection.features.map { feature -> Point? in
+			guard case .point(let point) = feature.geometry else { return nil }
+			return point
+		}.compactMap { $0 }
+
+		markerAnnotationManager.annotations = points.map {
+			var customPointAnnotation = PointAnnotation(coordinate: $0.coordinates)
+			customPointAnnotation.image = .init(image: UIImage(named: "bike")!, name: "bike")
+			return customPointAnnotation
+		}
 	}
 }

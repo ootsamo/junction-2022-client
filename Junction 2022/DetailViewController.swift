@@ -42,6 +42,7 @@ class DetailViewController: UIViewController {
 	private let scoreLabel = configure(UILabel()) {
 		$0.font = .systemFont(ofSize: 64, weight: .black)
 		$0.textAlignment = .center
+		$0.adjustsFontSizeToFitWidth = true
 	}
 
 	private let scoreDetailsStackView = configure(UIStackView()) {

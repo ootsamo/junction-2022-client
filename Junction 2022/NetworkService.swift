@@ -96,20 +96,10 @@ enum TransitType: String {
 	case transit
 }
 
-struct Score {
-	let description: String
-	let value: Int
-}
-
-enum MarkerType {
-	case cityBike
-	case gasStation
-	case vehicleCharging
-}
-
-struct Marker {
-	let type: MarkerType
-	let coordinate: CLLocationCoordinate2D
+struct CityBikes: Decodable {
+	let distanceToNearest: Double?
+	let score: Double
+	let bikesInArea: GeoJSONObject
 }
 
 struct ReachablePopulation: Decodable {
@@ -118,8 +108,7 @@ struct ReachablePopulation: Decodable {
 }
 
 struct Response: Decodable {
-//	let scores: [Score]
 	let reachablePopulation: ReachablePopulation
 	let isochoroneGeoJson: GeoJSONObject
-//	let markers: [Marker]
+	let cityBikes: CityBikes
 }
