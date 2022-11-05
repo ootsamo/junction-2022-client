@@ -3,7 +3,7 @@ import MapboxMaps
 
 class ViewController: UIViewController {
 	private let mapView: MapView
-	private let networkService = NetworkService(host: "example.com")
+	private let networkService = NetworkService()
 	private let isochroneSourceID = "isochrone-source"
 	private let isochroneLayerID = "isochrone-layer"
 
@@ -92,6 +92,9 @@ class ViewController: UIViewController {
 					transitTypes: [.drive],
 					transitDuration: 10
 				)
+				let address = try await networkService.fetchAddress(at: coordinates)
+				print("Address: \(address!)")
+				
 
 				guard case .featureCollection(let featureCollection) = response.isochoroneGeoJson else {
 					assertionFailure("Returned geojson was not a feature collection")

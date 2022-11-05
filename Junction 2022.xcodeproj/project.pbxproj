@@ -14,6 +14,7 @@
 		27B9CCEC2916AE0400129E32 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B9CCEB2916AE0400129E32 /* NetworkService.swift */; };
 		27B9CCEE2916B93E00129E32 /* SampleResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = 27B9CCED2916B93E00129E32 /* SampleResponse.json */; };
 		27B9CCF02916BA7C00129E32 /* Unsupported.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B9CCEF2916BA7C00129E32 /* Unsupported.swift */; };
+		27B9CCF32916CA3200129E32 /* MapboxSearch in Frameworks */ = {isa = PBXBuildFile; productRef = 27B9CCF22916CA3200129E32 /* MapboxSearch */; };
 		27FF6BFD2915A0BD003C0136 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FF6BFC2915A0BD003C0136 /* AppDelegate.swift */; };
 		27FF6BFF2915A0BD003C0136 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FF6BFE2915A0BD003C0136 /* SceneDelegate.swift */; };
 		27FF6C012915A0BD003C0136 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FF6C002915A0BD003C0136 /* ViewController.swift */; };
@@ -41,6 +42,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				27B9CCDE2915B4EC00129E32 /* MapboxMaps in Frameworks */,
+				27B9CCF32916CA3200129E32 /* MapboxSearch in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -115,6 +117,7 @@
 			name = "Junction 2022";
 			packageProductDependencies = (
 				27B9CCDD2915B4EC00129E32 /* MapboxMaps */,
+				27B9CCF22916CA3200129E32 /* MapboxSearch */,
 			);
 			productName = "Junction 2022";
 			productReference = 27FF6BF92915A0BD003C0136 /* Junction 2022.app */;
@@ -146,6 +149,7 @@
 			mainGroup = 27FF6BF02915A0BD003C0136;
 			packageReferences = (
 				27FF6C132915B09A003C0136 /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */,
+				27B9CCF12916C82200129E32 /* XCRemoteSwiftPackageReference "mapbox-search-ios" */,
 			);
 			productRefGroup = 27FF6BFA2915A0BD003C0136 /* Products */;
 			projectDirPath = "";
@@ -392,6 +396,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		27B9CCF12916C82200129E32 /* XCRemoteSwiftPackageReference "mapbox-search-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "ssh://git@github.com/mapbox/mapbox-search-ios";
+			requirement = {
+				kind = exactVersion;
+				version = "1.0.0-beta.38";
+			};
+		};
 		27FF6C132915B09A003C0136 /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "ssh://git@github.com/mapbox/mapbox-maps-ios";
@@ -407,6 +419,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 27FF6C132915B09A003C0136 /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */;
 			productName = MapboxMaps;
+		};
+		27B9CCF22916CA3200129E32 /* MapboxSearch */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 27B9CCF12916C82200129E32 /* XCRemoteSwiftPackageReference "mapbox-search-ios" */;
+			productName = MapboxSearch;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
