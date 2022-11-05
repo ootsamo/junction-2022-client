@@ -3,6 +3,7 @@ import MapboxMaps
 
 class ViewController: UIViewController {
 	private let mapView: MapView
+	private let pointAnnotationManager: PointAnnotationManager
 	private let detailViewController = DetailViewController()
 	private let networkService = NetworkService()
 	private let isochroneSourceID = "isochrone-source"
@@ -23,6 +24,8 @@ class ViewController: UIViewController {
 			frame: CGRect(origin: .zero, size: CGSize(width: 100, height: 100)),
 			mapInitOptions: mapInitOptions
 		)
+
+		pointAnnotationManager = mapView.annotations.makePointAnnotationManager()
 
 		super.init(nibName: nil, bundle: nil)
 	}
@@ -94,7 +97,6 @@ class ViewController: UIViewController {
 			let point = recognizer.location(in: mapView)
 			let coordinates = mapView.mapboxMap.coordinate(for: point)
 
-			let pointAnnotationManager = mapView.annotations.makePointAnnotationManager()
 			var customPointAnnotation = PointAnnotation(coordinate: coordinates)
 			customPointAnnotation.image = .init(image: UIImage(named: "pin")!, name: "pin")
 			pointAnnotationManager.annotations = [customPointAnnotation]
