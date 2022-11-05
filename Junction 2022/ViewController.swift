@@ -105,8 +105,6 @@ class ViewController: UIViewController {
 					transitType: .drive,
 					transitDuration: 10
 				)
-				let address = try await networkService.fetchAddress(at: coordinates)
-				detailViewController.headline = address
 
 				guard case .featureCollection(let featureCollection) = response.isochoroneGeoJson else {
 					assertionFailure("Returned geojson was not a feature collection")
@@ -114,6 +112,12 @@ class ViewController: UIViewController {
 				}
 
 				addArea(from: featureCollection)
+			}
+
+			Task {
+				let address = try await networkService.fetchAddress(at: coordinates)
+				detailViewController.headline = address.primaryComponent
+				detailViewController.subheadline = address.secondaryComponent
 			}
 		}
 	}

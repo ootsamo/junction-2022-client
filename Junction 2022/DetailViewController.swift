@@ -3,12 +3,18 @@ import UIKit
 class DetailViewController: UIViewController {
 	private lazy var mainStackView = configure(UIStackView()) {
 		$0.axis = .vertical
-		[titleLabel].forEach($0.addArrangedSubview)
+		$0.spacing = 4
+		[headlineLabel, subheadlineLabel].forEach($0.addArrangedSubview)
 	}
 
-	private let titleLabel = configure(UILabel()) {
+	private let headlineLabel = configure(UILabel()) {
 		$0.font = .preferredFont(forTextStyle: .headline)
 		$0.text = "Arkadiankatu 6"
+	}
+
+	private let subheadlineLabel = configure(UILabel()) {
+		$0.font = .preferredFont(forTextStyle: .caption1)
+		$0.text = "00100 Helsinki"
 	}
 
 	override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -18,8 +24,13 @@ class DetailViewController: UIViewController {
 	required init?(coder: NSCoder) { unsupported() }
 
 	var headline: String? {
-		get { titleLabel.text }
-		set { titleLabel.text = newValue }
+		get { headlineLabel.text }
+		set { headlineLabel.text = newValue }
+	}
+
+	var subheadline: String? {
+		get { subheadlineLabel.text }
+		set { subheadlineLabel.text = newValue }
 	}
 
 	override func viewDidLoad() {

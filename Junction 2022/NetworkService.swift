@@ -29,7 +29,7 @@ class NetworkService {
 		return try JSONDecoder().decode(Response.self, from: data)
 	}
 
-	func fetchAddress(at coordinates: CLLocationCoordinate2D) async throws -> String? {
+	func fetchAddress(at coordinates: CLLocationCoordinate2D) async throws -> AddressResponse {
 		let engine = SearchEngine()
 		let options = ReverseGeocodingOptions(point: coordinates, limit: 1, types: [.address])
 		return try await withCheckedThrowingContinuation { continuation in
@@ -38,9 +38,15 @@ class NetworkService {
 					switch result {
 					case .failure(let error): continuation.resume(throwing: error)
 					case .success(let matches):
-						continuation.resume(returning: matches.first?.address.map {
+						let address = matches.first?.address
+						let primary = address.map {
 							[$0.street, $0.houseNumber].compactMap { $0 }.joined(separator: " ")
-						})
+						}
+						let secondary = address.map {
+							[$0.postcode, $0.place].compactMap { $0 }.joined(separator: " ")
+						}
+						let response = AddressResponse(primaryComponent: primary ?? "", secondaryComponent: secondary ?? "")
+						continuation.resume(returning: response)
 					}
 				}
 			}
@@ -70,6 +76,11 @@ class NetworkService {
 
 		return url
 	}
+}
+
+struct AddressResponse {
+	let primaryComponent: String
+	let secondaryComponent: String
 }
 
 enum NetworkServiceError: Error {
