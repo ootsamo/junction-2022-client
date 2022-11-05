@@ -30,7 +30,10 @@ class DetailViewController: UIViewController {
 
 	var subheadline: String? {
 		get { subheadlineLabel.text }
-		set { subheadlineLabel.text = newValue }
+		set {
+			subheadlineLabel.text = newValue
+			subheadlineLabel.isHidden = newValue == nil
+		}
 	}
 
 	override func viewDidLoad() {

@@ -20,7 +20,6 @@ class NetworkService {
 
 		let url = url(host: appHost, path: "/estimate", query: query)
 		let (data, response) = try await URLSession.shared.data(from: url)
-		print(String(data: data, encoding: .utf8)!)
 		try validateResponse(response)
 
 //		let sampleURL = Bundle.main.url(forResource: "SampleResponse", withExtension: "json")!
@@ -45,7 +44,7 @@ class NetworkService {
 						let secondary = address.map {
 							[$0.postcode, $0.place].compactMap { $0 }.joined(separator: " ")
 						}
-						let response = AddressResponse(primaryComponent: primary ?? "", secondaryComponent: secondary ?? "")
+						let response = AddressResponse(primaryComponent: primary, secondaryComponent: secondary)
 						continuation.resume(returning: response)
 					}
 				}
@@ -79,8 +78,8 @@ class NetworkService {
 }
 
 struct AddressResponse {
-	let primaryComponent: String
-	let secondaryComponent: String
+	let primaryComponent: String?
+	let secondaryComponent: String?
 }
 
 enum NetworkServiceError: Error {

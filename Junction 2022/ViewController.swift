@@ -3,6 +3,7 @@ import MapboxMaps
 
 class ViewController: UIViewController {
 	private let mapView: MapView
+	private let pinView = UIImageView(image: UIImage(systemName: "mappin"))
 	private let pointAnnotationManager: PointAnnotationManager
 	private let detailViewController = DetailViewController()
 	private let networkService = NetworkService()
@@ -95,15 +96,35 @@ class ViewController: UIViewController {
 	private func handleLongPress(recognizer: UILongPressGestureRecognizer) {
 		if recognizer.state == .began {
 			let point = recognizer.location(in: mapView)
-			let coordinates = mapView.mapboxMap.coordinate(for: point)
+			let coordinate = mapView.mapboxMap.coordinate(for: point)
 
-			var customPointAnnotation = PointAnnotation(coordinate: coordinates)
-			customPointAnnotation.image = .init(image: UIImage(named: "pin")!, name: "pin")
-			pointAnnotationManager.annotations = [customPointAnnotation]
+			do {
+				let aspectRatio = pinView.image.map { $0.size.width / $0.size.height } ?? 1
+				let height: CGFloat = 64
+				let options = ViewAnnotationOptions(
+					geometry: Point(coordinate),
+					width: aspectRatio * height,
+					height: height,
+					anchor: .bottom
+				)
+				pinView.tintColor = .red
+				if pinView.superview == nil {
+					try mapView.viewAnnotations.add(pinView, options: options)
+				} else {
+					try mapView.viewAnnotations.update(pinView, options: options)
+				}
+			} catch {
+				assertionFailure("Failed to add or update pin annotation: \(error)")
+			}
+
+//			var annotation = PointAnnotation(coordinate: coordinates)
+//			annotation.image = .init(image: UIImage(systemName: "mappin")!, name: "pin")
+//			pointAnnotationManager.annotations = [annotation]
+//			mapView.annotations.makePointAnnotationManager()
 
 			Task {
 				let response = try await networkService.fetchScores(
-					at: coordinates,
+					at: coordinate,
 					transitType: .drive,
 					transitDuration: 10
 				)
@@ -117,8 +138,8 @@ class ViewController: UIViewController {
 			}
 
 			Task {
-				let address = try await networkService.fetchAddress(at: coordinates)
-				detailViewController.headline = address.primaryComponent
+				let address = try await networkService.fetchAddress(at: coordinate)
+				detailViewController.headline = address.primaryComponent ?? "No address"
 				detailViewController.subheadline = address.secondaryComponent
 			}
 		}
