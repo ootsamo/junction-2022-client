@@ -31,6 +31,8 @@ class ViewController: UIViewController {
 			mapInitOptions: mapInitOptions
 		)
 
+		mapView.ornaments.scaleBarView.isHidden = true
+
 		pinAnnotationManager = mapView.annotations.makePointAnnotationManager()
 		markerAnnotationManager = mapView.annotations.makePointAnnotationManager()
 
