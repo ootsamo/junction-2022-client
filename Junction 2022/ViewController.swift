@@ -102,7 +102,7 @@ class ViewController: UIViewController {
 			Task {
 				let response = try await networkService.fetchScores(
 					at: coordinates,
-					transitTypes: [.drive],
+					transitType: .drive,
 					transitDuration: 10
 				)
 				let address = try await networkService.fetchAddress(at: coordinates)

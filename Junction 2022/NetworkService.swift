@@ -3,25 +3,28 @@ import Turf
 import MapboxSearch
 
 class NetworkService {
-	let appHost = "example.com"
+	let appHost = "34.27.83.200"
 	let mapboxHost = "api.mapbox.com"
 
 	func fetchScores(
 		at coordinate: CLLocationCoordinate2D,
-		transitTypes: [TransitType],
+		transitType: TransitType,
 		transitDuration: Int
 	) async throws -> Response {
 		let query = [
 			("longitude", String(coordinate.longitude)),
 			("latitude", String(coordinate.latitude)),
-			("isochroneTransitModes", transitTypes.map(\.rawValue).joined(separator: ",")),
+			("isochroneTransitMode", transitType.rawValue),
 			("isochroneTimeRange", String(transitDuration))
 		]
 
 		let url = url(host: appHost, path: "/estimate", query: query)
-		//let (data, response) = try! await URLSession.shared.data(from: url)
-		let sampleURL = Bundle.main.url(forResource: "SampleResponse", withExtension: "json")!
-		let data = try! Data(contentsOf: sampleURL)
+		let (data, response) = try await URLSession.shared.data(from: url)
+		print(String(data: data, encoding: .utf8)!)
+		try validateResponse(response)
+
+//		let sampleURL = Bundle.main.url(forResource: "SampleResponse", withExtension: "json")!
+//		let data = try! Data(contentsOf: sampleURL)
 
 		return try JSONDecoder().decode(Response.self, from: data)
 	}
@@ -56,7 +59,7 @@ class NetworkService {
 
 	private func url(host: String, path: String, query: [(String, String?)]) -> URL {
 		var components = URLComponents()
-		components.scheme = "https"
+		components.scheme = host == appHost ? "http" : "https"
 		components.host = host
 		components.path = path
 		components.queryItems = query.map(URLQueryItem.init)
