@@ -66,9 +66,9 @@ class ViewController: UIViewController {
 		transitDurationSelectorView = FilterSelectorView(tiles: transitDurationTiles)
 
 		let mapStyleTiles = [
-			(blueprintStyleURI, FilterTileView(title: "Blueprint")),
-			(darkStyleURI, FilterTileView(title: "Dark")),
-			(satelliteStyleURI, FilterTileView(title: "Sat"))
+			(blueprintStyleURI, FilterTileView(image: UIImage(named: "map-blueprint")!)),
+			(darkStyleURI, FilterTileView(image: UIImage(named: "map-dark")!)),
+			(satelliteStyleURI, FilterTileView(image: UIImage(named: "map-satellite")!))
 		]
 		mapStyleSelectorView = FilterSelectorView(tiles: mapStyleTiles)
 

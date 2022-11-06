@@ -39,6 +39,8 @@ class FilterSelectorView<T: Equatable>: UIView {
 		backgroundColor = .systemBackground
 		layer.masksToBounds = true
 		layer.cornerRadius = 8
+		layer.borderWidth = 1
+		layer.borderColor = UIColor.label.cgColor
 	}
 
 	private func setupLayout() {
@@ -85,30 +87,43 @@ class FilterSelectorView<T: Equatable>: UIView {
 class FilterTileView: UIView {
 	let size = CGSize(width: 72, height: 72)
 
-	private let titleLabel = configure(UILabel()) {
-		$0.font = .boldSystemFont(ofSize: 18)
-		$0.textAlignment = .center
-	}
+	private let contentView: UIView
 
 	init(title: String) {
+		contentView = configure(UILabel()) {
+			$0.font = .boldSystemFont(ofSize: 18)
+			$0.textAlignment = .center
+			$0.text = title
+		}
+
 		super.init(frame: .zero)
-		titleLabel.text = title
+
+		setupLayout()
+	}
+
+	init(image: UIImage) {
+		contentView = configure(UIImageView()) {
+			$0.image = image
+			$0.contentMode = .scaleToFill
+		}
+
+		super.init(frame: .zero)
 
 		setupLayout()
 	}
 
 	private func setupLayout() {
-		titleLabel.translatesAutoresizingMaskIntoConstraints = false
-		addSubview(titleLabel)
+		contentView.translatesAutoresizingMaskIntoConstraints = false
+		addSubview(contentView)
 
 		NSLayoutConstraint.activate([
 			heightAnchor.constraint(equalToConstant: size.height),
 			widthAnchor.constraint(equalToConstant: size.width),
 
-			titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
-			titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
-			titleLabel.topAnchor.constraint(equalTo: topAnchor),
-			titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
+			contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
+			contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
+			contentView.topAnchor.constraint(equalTo: topAnchor),
+			contentView.bottomAnchor.constraint(equalTo: bottomAnchor)
 		])
 	}
 
