@@ -1,5 +1,6 @@
 import UIKit
 import MapboxMaps
+import MapKit
 
 class ViewController: UIViewController {
 	private let mapView: MapView
@@ -12,7 +13,15 @@ class ViewController: UIViewController {
 	private let markerAnnotationManager: PointAnnotationManager
 	private var markerViews = [UIView]()
 	private let detailViewController = DetailViewController()
+
+	private let transitTypeSelectorView: FilterSelectorView<TransitType>
+	private let transitDurationSelectorView: FilterSelectorView<Int>
+
 	private let networkService = NetworkService()
+
+	private var selectedCoordinate: CLLocationCoordinate2D?
+	private var selectedTransitType = TransitType.walk
+	private var selectedTransitDuration = 5
 
 	override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
 		let mapInitOptions = MapInitOptions(
@@ -36,7 +45,37 @@ class ViewController: UIViewController {
 		pinAnnotationManager = mapView.annotations.makePointAnnotationManager()
 		markerAnnotationManager = mapView.annotations.makePointAnnotationManager()
 
+		let transitTypeTiles: [(TransitType, FilterTileView)] = [
+			(.walk, FilterTileView(title: "Walk")),
+			(.bicycle, FilterTileView(title: "Cycle")),
+			(.transit, FilterTileView(title: "Transit")),
+			(.drive, FilterTileView(title: "Drive"))
+		]
+		transitTypeSelectorView = FilterSelectorView(tiles: transitTypeTiles)
+
+		let transitDurationTiles = [
+			(5, FilterTileView(title: "5 min")),
+			(10, FilterTileView(title: "10 min"))
+		]
+		transitDurationSelectorView = FilterSelectorView(tiles: transitDurationTiles)
+
 		super.init(nibName: nil, bundle: nil)
+
+		transitTypeSelectorView.onSelect = { [weak self] key in
+			guard self?.selectedTransitType != key else { return }
+			self?.selectedTransitType = key
+			if let coordinate = self?.selectedCoordinate {
+				Task { self?.updateContent(for: coordinate) }
+			}
+		}
+
+		transitDurationSelectorView.onSelect = { [weak self] key in
+			guard self?.selectedTransitDuration != key else { return }
+			self?.selectedTransitDuration = key
+			if let coordinate = self?.selectedCoordinate {
+				Task { self?.updateContent(for: coordinate) }
+			}
+		}
 	}
 	
 	required init?(coder: NSCoder) { unsupported() }
@@ -56,6 +95,11 @@ class ViewController: UIViewController {
 			])
 		}
 
+		mapView.mapboxMap.onEvery(event: .cameraChanged) { [weak self] _ in
+			self?.transitTypeSelectorView.setActive(false, animated: true)
+			self?.transitDurationSelectorView.setActive(false, animated: true)
+		}
+
 		mapView.addGestureRecognizer(UILongPressGestureRecognizer(
 			target: self,
 			action: #selector(handleLongPress)
@@ -65,12 +109,23 @@ class ViewController: UIViewController {
 		view.addSubview(detailViewController.view)
 		detailViewController.didMove(toParent: self)
 
+		[transitTypeSelectorView, transitDurationSelectorView].forEach {
+			$0.translatesAutoresizingMaskIntoConstraints = false
+			view.addSubview($0)
+		}
+
 		let detailView: UIView = detailViewController.view
 		detailView.translatesAutoresizingMaskIntoConstraints = false
 		NSLayoutConstraint.activate([
-			detailView.widthAnchor.constraint(equalToConstant: 320),
+			detailView.widthAnchor.constraint(equalToConstant: 350),
 			detailView.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
-			detailView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor)
+			detailView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor),
+
+			transitTypeSelectorView.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
+			transitTypeSelectorView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor),
+
+			transitDurationSelectorView.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
+			transitDurationSelectorView.topAnchor.constraint(equalTo: transitTypeSelectorView.bottomAnchor, constant: 16)
 		])
 	}
 
@@ -79,6 +134,7 @@ class ViewController: UIViewController {
 		if recognizer.state == .began {
 			let point = recognizer.location(in: mapView)
 			let coordinate = mapView.mapboxMap.coordinate(for: point)
+			selectedCoordinate = coordinate
 
 			do {
 				try updatePin(for: coordinate)
@@ -86,23 +142,7 @@ class ViewController: UIViewController {
 				assertionFailure("Failed to add or update pin annotation: \(error)")
 			}
 
-			Task {
-				do {
-					try await updateScores(for: coordinate)
-				} catch {
-					assertionFailure("Failed to update scores: \(error)")
-				}
-			}
-
-			Task {
-				do {
-					let address = try await networkService.fetchAddress(at: coordinate)
-					detailViewController.headline = address.primaryComponent ?? "No address"
-					detailViewController.subheadline = address.secondaryComponent
-				} catch {
-					assertionFailure("Failed to update address: \(error)")
-				}
-			}
+			updateContent(for: coordinate)
 		}
 	}
 
@@ -152,11 +192,34 @@ class ViewController: UIViewController {
 		}
 	}
 
+	private func updateContent(for coordinate: CLLocationCoordinate2D) {
+		Task {
+			detailViewController.state = .loading
+
+			do {
+				try await updateScores(for: coordinate)
+			} catch {
+				detailViewController.state = .nothingSelected
+				assertionFailure("Failed to update scores: \(error)")
+			}
+
+			do {
+				let address = try await networkService.fetchAddress(at: coordinate)
+				detailViewController.headline = address.primaryComponent ?? "No address"
+				detailViewController.subheadline = address.secondaryComponent
+			} catch {
+				assertionFailure("Failed to update address: \(error)")
+			}
+
+			detailViewController.state = .loaded
+		}
+	}
+
 	private func updateScores(for coordinate: CLLocationCoordinate2D) async throws {
 		let response = try await networkService.fetchScores(
 			at: coordinate,
-			transitType: .transit,
-			transitDuration: 5
+			transitType: selectedTransitType,
+			transitDuration: selectedTransitType == .drive ? min(5, selectedTransitDuration) : selectedTransitDuration
 		)
 
 		updateScoreDetails(from: response)
@@ -177,7 +240,7 @@ class ViewController: UIViewController {
 			guard case .polygon(let polygon) = feature.geometry else { return [] }
 			return polygon.coordinates.flatMap { $0 }
 		}.flatMap { $0 }
-		let padding = UIEdgeInsets(top: 64, left: 384, bottom: 64, right: 64)
+		let padding = UIEdgeInsets(top: 64, left: 414, bottom: 64, right: 64)
 		let cameraOptions = mapView.mapboxMap.camera(for: points, padding: padding, bearing: nil, pitch: nil)
 		mapView.camera.fly(to: cameraOptions)
 	}
@@ -207,7 +270,12 @@ class ViewController: UIViewController {
 		let cityBikesDetail = AttractionDetail(
 			icon: UIImage(systemName: "bicycle.circle"),
 			description: "Nearest bike station:",
-			value: response.cityBikes.distanceToNearest.map { String(format: "%.2f km", $0) } ?? "-"
+			value: response.cityBikes.distanceToNearest.map {
+				let formatter = MKDistanceFormatter()
+				formatter.unitStyle = .abbreviated
+				formatter.locale = Locale(identifier: "en_FI")
+				return formatter.string(fromDistance: $0 * 1000)
+			} ?? "-"
 		)
 		let poisDetail = AttractionDetail(
 			icon: UIImage(systemName: "star.circle"),

@@ -20,6 +20,8 @@
 		27B9CCF92916FA4D00129E32 /* AttractionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B9CCF82916FA4D00129E32 /* AttractionDetailView.swift */; };
 		27B9CCFB2916FA5C00129E32 /* ScoreDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B9CCFA2916FA5C00129E32 /* ScoreDetailView.swift */; };
 		27B9CCFD29171F2200129E32 /* GeoJSONObject+FeatureCount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B9CCFC29171F2200129E32 /* GeoJSONObject+FeatureCount.swift */; };
+		27B9CCFF291720E500129E32 /* FilterSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B9CCFE291720E500129E32 /* FilterSelectorView.swift */; };
+		27B9CD01291733DF00129E32 /* NSLayoutConstraint+WithPriority.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B9CD00291733DF00129E32 /* NSLayoutConstraint+WithPriority.swift */; };
 		27FF6BFD2915A0BD003C0136 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FF6BFC2915A0BD003C0136 /* AppDelegate.swift */; };
 		27FF6BFF2915A0BD003C0136 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FF6BFE2915A0BD003C0136 /* SceneDelegate.swift */; };
 		27FF6C012915A0BD003C0136 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FF6C002915A0BD003C0136 /* ViewController.swift */; };
@@ -38,6 +40,8 @@
 		27B9CCF82916FA4D00129E32 /* AttractionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttractionDetailView.swift; sourceTree = "<group>"; };
 		27B9CCFA2916FA5C00129E32 /* ScoreDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreDetailView.swift; sourceTree = "<group>"; };
 		27B9CCFC29171F2200129E32 /* GeoJSONObject+FeatureCount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GeoJSONObject+FeatureCount.swift"; sourceTree = "<group>"; };
+		27B9CCFE291720E500129E32 /* FilterSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterSelectorView.swift; sourceTree = "<group>"; };
+		27B9CD00291733DF00129E32 /* NSLayoutConstraint+WithPriority.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSLayoutConstraint+WithPriority.swift"; sourceTree = "<group>"; };
 		27FF6BF92915A0BD003C0136 /* Junction 2022.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Junction 2022.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		27FF6BFC2915A0BD003C0136 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		27FF6BFE2915A0BD003C0136 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -101,9 +105,11 @@
 				27B9CCF42916CFC800129E32 /* DetailViewController.swift */,
 				27B9CCF82916FA4D00129E32 /* AttractionDetailView.swift */,
 				27B9CCFA2916FA5C00129E32 /* ScoreDetailView.swift */,
+				27B9CCFE291720E500129E32 /* FilterSelectorView.swift */,
 				27B9CCF62916F99000129E32 /* SeparatorView.swift */,
 				27B9CCEB2916AE0400129E32 /* NetworkService.swift */,
 				27B9CCFC29171F2200129E32 /* GeoJSONObject+FeatureCount.swift */,
+				27B9CD00291733DF00129E32 /* NSLayoutConstraint+WithPriority.swift */,
 				27B9CCE12915B79E00129E32 /* Configure.swift */,
 				27B9CCEF2916BA7C00129E32 /* Unsupported.swift */,
 				27B9CCDF2915B57600129E32 /* Secrets.swift */,
@@ -196,6 +202,7 @@
 				27B9CCF72916F99000129E32 /* SeparatorView.swift in Sources */,
 				27FF6C012915A0BD003C0136 /* ViewController.swift in Sources */,
 				27B9CCFD29171F2200129E32 /* GeoJSONObject+FeatureCount.swift in Sources */,
+				27B9CCFF291720E500129E32 /* FilterSelectorView.swift in Sources */,
 				27B9CCE02915B57600129E32 /* Secrets.swift in Sources */,
 				27FF6BFD2915A0BD003C0136 /* AppDelegate.swift in Sources */,
 				27B9CCF92916FA4D00129E32 /* AttractionDetailView.swift in Sources */,
@@ -205,6 +212,7 @@
 				27FF6BFF2915A0BD003C0136 /* SceneDelegate.swift in Sources */,
 				27B9CCF52916CFC800129E32 /* DetailViewController.swift in Sources */,
 				27B9CCFB2916FA5C00129E32 /* ScoreDetailView.swift in Sources */,
+				27B9CD01291733DF00129E32 /* NSLayoutConstraint+WithPriority.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

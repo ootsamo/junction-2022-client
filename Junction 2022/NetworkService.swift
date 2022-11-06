@@ -3,7 +3,7 @@ import Turf
 import MapboxSearch
 
 class NetworkService {
-	let appHost = "34.27.83.200"
+	let appHost = "35.228.112.242"
 	let mapboxHost = "api.mapbox.com"
 
 	func fetchScores(
@@ -19,7 +19,9 @@ class NetworkService {
 		]
 
 		let url = url(host: appHost, path: "/estimate", query: query)
-		let (data, response) = try await URLSession.shared.data(from: url)
+		var request = URLRequest(url: url)
+		request.timeoutInterval = 120
+		let (data, response) = try await URLSession.shared.data(for: request)
 		try validateResponse(response)
 
 //		let sampleURL = Bundle.main.url(forResource: "SampleResponse", withExtension: "json")!
