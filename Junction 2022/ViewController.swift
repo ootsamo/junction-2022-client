@@ -16,6 +16,7 @@ class ViewController: UIViewController {
 
 	private let transitTypeSelectorView: FilterSelectorView<TransitType>
 	private let transitDurationSelectorView: FilterSelectorView<Int>
+	private let mapStyleSelectorView: FilterSelectorView<StyleURI>
 
 	private let networkService = NetworkService()
 
@@ -24,6 +25,10 @@ class ViewController: UIViewController {
 	private var selectedTransitDuration = 5
 
 	override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+		let darkStyleURI = StyleURI(rawValue: "mapbox://styles/hallitunkki/cla4ne724001415n4crj4e86k")!
+		let blueprintStyleURI = StyleURI(rawValue: "mapbox://styles/hallitunkki/cla2wbi3s00mt14p09fdvkj47")!
+		let satelliteStyleURI = StyleURI(rawValue: "mapbox://styles/hallitunkki/cla4fl1en003416r56cbtebys")!
+
 		let mapInitOptions = MapInitOptions(
 			resourceOptions: ResourceOptions(
 				accessToken: Secrets.mapboxPublicAccessToken
@@ -32,7 +37,7 @@ class ViewController: UIViewController {
 				center: CLLocationCoordinate2D(latitude: 60.1816728, longitude: 24.9340785),
 				zoom: 11
 			),
-			styleURI: StyleURI(rawValue: "mapbox://styles/hallitunkki/cla2wbi3s00mt14p09fdvkj47")
+			styleURI: blueprintStyleURI
 		)
 
 		mapView = MapView(
@@ -41,6 +46,7 @@ class ViewController: UIViewController {
 		)
 
 		mapView.ornaments.scaleBarView.isHidden = true
+		mapView.ornaments.compassView.isHidden = true
 
 		pinAnnotationManager = mapView.annotations.makePointAnnotationManager()
 		markerAnnotationManager = mapView.annotations.makePointAnnotationManager()
@@ -59,6 +65,13 @@ class ViewController: UIViewController {
 		]
 		transitDurationSelectorView = FilterSelectorView(tiles: transitDurationTiles)
 
+		let mapStyleTiles = [
+			(blueprintStyleURI, FilterTileView(title: "Blueprint")),
+			(darkStyleURI, FilterTileView(title: "Dark")),
+			(satelliteStyleURI, FilterTileView(title: "Sat"))
+		]
+		mapStyleSelectorView = FilterSelectorView(tiles: mapStyleTiles)
+
 		super.init(nibName: nil, bundle: nil)
 
 		transitTypeSelectorView.onSelect = { [weak self] key in
@@ -75,6 +88,10 @@ class ViewController: UIViewController {
 			if let coordinate = self?.selectedCoordinate {
 				Task { self?.updateContent(for: coordinate) }
 			}
+		}
+
+		mapStyleSelectorView.onSelect = { [weak self] key in
+			self?.mapView.mapboxMap.loadStyleURI(key)
 		}
 	}
 	
@@ -109,7 +126,7 @@ class ViewController: UIViewController {
 		view.addSubview(detailViewController.view)
 		detailViewController.didMove(toParent: self)
 
-		[transitTypeSelectorView, transitDurationSelectorView].forEach {
+		[transitTypeSelectorView, transitDurationSelectorView, mapStyleSelectorView].forEach {
 			$0.translatesAutoresizingMaskIntoConstraints = false
 			view.addSubview($0)
 		}
@@ -125,7 +142,10 @@ class ViewController: UIViewController {
 			transitTypeSelectorView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor),
 
 			transitDurationSelectorView.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
-			transitDurationSelectorView.topAnchor.constraint(equalTo: transitTypeSelectorView.bottomAnchor, constant: 16)
+			transitDurationSelectorView.topAnchor.constraint(equalTo: transitTypeSelectorView.bottomAnchor, constant: 16),
+
+			mapStyleSelectorView.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
+			mapStyleSelectorView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor)
 		])
 	}
 
@@ -185,8 +205,8 @@ class ViewController: UIViewController {
 			}
 			
 			try style.addSource(geoJSONSource, id: sourceID)
-			try style.addLayer(fillLayer)
-			try style.addLayer(lineLayer)
+			try style.addPersistentLayer(fillLayer)
+			try style.addPersistentLayer(lineLayer)
 		} catch {
 			assertionFailure("Failed to add line layer: \(error)")
 		}
