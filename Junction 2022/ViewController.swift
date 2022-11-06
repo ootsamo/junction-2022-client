@@ -61,7 +61,8 @@ class ViewController: UIViewController {
 
 		let transitDurationTiles = [
 			(5, FilterTileView(title: "5 min")),
-			(10, FilterTileView(title: "10 min"))
+			(10, FilterTileView(title: "10 min")),
+			(15, FilterTileView(title: "15 min"))
 		]
 		transitDurationSelectorView = FilterSelectorView(tiles: transitDurationTiles)
 
