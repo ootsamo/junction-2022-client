@@ -115,6 +115,7 @@ class ViewController: UIViewController {
 		mapView.mapboxMap.onEvery(event: .cameraChanged) { [weak self] _ in
 			self?.transitTypeSelectorView.setActive(false, animated: true)
 			self?.transitDurationSelectorView.setActive(false, animated: true)
+			self?.mapStyleSelectorView.setActive(false, animated: true)
 		}
 
 		mapView.addGestureRecognizer(UILongPressGestureRecognizer(
